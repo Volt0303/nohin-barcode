@@ -1,0 +1,11 @@
+Option Explicit
+
+Private Sub Workbook_Open()
+    modScan.SetupInputCell
+    shScan.Activate
+    shScan.Range("B3").Select
+End Sub
+
+Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Target As Range)
+    If Sh Is shScan Then modScan.HandleScan Target
+End Sub
