@@ -58,8 +58,11 @@ function ysQrDraw(doc, page, text) {
 }
 """
 
+# Full-width digits (typed with the Japanese IME on) are converted to half-width.
 QTY_KEYSTROKE_JS = (
     "if (!event.willCommit) {"
+    " event.change = event.change.replace(/[\\uFF10-\\uFF19]/g,"
+    " function (d) { return String.fromCharCode(d.charCodeAt(0) - 0xFEE0); });"
     " event.rc = /^[0-9]*$/.test(event.change);"
     " if (!event.rc) app.beep(0);"
     "}"
@@ -95,7 +98,8 @@ def empty_appearance(pdf, rect):
 
 
 def js_action(pdf, script):
-    return Dictionary(S=Name.JavaScript, JS=pdf.make_stream(script.encode("utf-8")))
+    # ASCII only: Acrobat reads JavaScript streams as PDFDocEncoding, not UTF-8.
+    return Dictionary(S=Name.JavaScript, JS=pdf.make_stream(script.encode("ascii")))
 
 
 def text_field(pdf, page, name, rect, *, read_only=False, tooltip=None, extra=None):

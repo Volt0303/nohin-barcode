@@ -2,7 +2,8 @@
 // const, arrow functions or Array helpers).
 //
 // Fixed to QR version 2 (25x25), error correction level M, byte mode.
-// Capacity: 26 ASCII characters. Used for "注番,納入数", e.g. "YN34214,10000".
+// Capacity: 26 ASCII characters. Used for "<order no>,<quantity>", e.g. "YN34214,10000".
+// Keep this file ASCII-only: Acrobat does not read JavaScript streams as UTF-8.
 //
 // qrV2M(text) returns a 25x25 array of booleans (true = dark), or null if the
 // text is too long or contains non-ASCII characters.
