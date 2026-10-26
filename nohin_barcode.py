@@ -21,8 +21,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pdfplumber
 import pikepdf
+from pdfminer.high_level import extract_pages
+from pdfminer.layout import LTChar, LTContainer
 from pikepdf import Array, Dictionary, Name, String
 
 import layout as L
@@ -79,14 +80,26 @@ def pdf_rect(box, inset=0.0):
     return Array([x0 + inset, L.PAGE_HEIGHT - bottom + inset, x1 - inset, L.PAGE_HEIGHT - top - inset])
 
 
+def _chars(container):
+    for item in container:
+        if isinstance(item, LTChar):
+            yield item
+        elif isinstance(item, LTContainer):
+            yield from _chars(item)
+
+
 def read_chuban(pdf_path):
+    """Text inside CHUBAN_TEXT_ZONE on each page, or None where it is empty."""
+    x0, top, x1, bottom = L.CHUBAN_TEXT_ZONE
     found = []
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            x0, top, x1, bottom = L.CHUBAN_TEXT_ZONE
-            words = [w["text"] for w in page.extract_words()
-                     if w["x0"] >= x0 and w["x1"] <= x1 and w["top"] >= top and w["bottom"] <= bottom]
-            found.append(words[0] if len(words) == 1 else None)
+    for page in extract_pages(str(pdf_path)):
+        chars = []
+        for ch in _chars(page):
+            cx0, cy0, cx1, cy1 = ch.bbox
+            if cx0 >= x0 and cx1 <= x1 and L.PAGE_HEIGHT - cy1 >= top and L.PAGE_HEIGHT - cy0 <= bottom:
+                chars.append((cx0, ch.get_text()))
+        text = "".join(t for _, t in sorted(chars)).strip()
+        found.append(text or None)
     return found
 
 
@@ -235,7 +248,14 @@ def main(argv=None):
     parser.add_argument("pdf")
     parser.add_argument("--chuban", help="注番（省略時はPDFから読み取り）")
     parser.add_argument("--out", help="出力先（省略時は元のファイルを上書き）")
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit:
+        # The windowed .exe has no console, so argparse's message would be lost.
+        if sys.stderr is None:
+            show_error("納品書バーコード追加ツールの呼び出し方が正しくありません。\n"
+                       "ファイルメーカーのスクリプト設定を確認してください。")
+        raise
 
     logging.basicConfig(filename=log_path(), level=logging.INFO, encoding="utf-8",
                         format="%(asctime)s %(levelname)s %(message)s")
