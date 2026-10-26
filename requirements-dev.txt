@@ -1,0 +1,8 @@
+# Development and test tools (not bundled into the .exe)
+-r requirements.txt
+pdfplumber==0.11.10
+openpyxl==3.1.5
+qrcode==8.2
+opencv-python-headless==5.0.0.93
+numpy==2.5.4
+pyinstaller==6.16.0

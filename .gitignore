@@ -1,0 +1,16 @@
+# Python
+.venv/
+.venv-win/
+__pycache__/
+*.pyc
+
+# PyInstaller (build/build.bat writes to build/nohin_barcode/ and dist/)
+build/nohin_barcode/
+dist/
+*.spec
+
+# Node (tests/package.json and package-lock.json stay tracked)
+tests/node_modules/
+
+# Test output
+out/
