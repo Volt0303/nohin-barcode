@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>操作説明書（発行担当者様向け）</title>
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<header class="doc">
+  <div class="system">納品書PDF 納入数入力・2次元バーコード化システム</div>
+  <h1>操作説明書　発行担当者様向け</h1>
+  <p class="lead">ファイルメーカーで納品書PDFを作成し、仕入先様へメール送付される方向けの説明書です。</p>
+</header>
+
+<div class="summary">
+  <strong>作業手順は、これまでと変わりません。</strong><br>
+  ファイルメーカーで納品書PDFを作成すると、PDFに「納入数の入力欄」と「バーコード表示欄」が自動で追加されます。
+  PDF作成後、数秒お待ちいただいてから、いつもどおりメールに添付して送付してください。
+</div>
+
+<h2>日々の操作</h2>
+<ol class="steps">
+  <li>いつもどおり、ファイルメーカーで納品書PDFを作成します。</li>
+  <li>PDF作成後、<strong>約5秒</strong>お待ちください。
+    <span class="note">この間に入力欄とバーコード表示欄が自動で追加されます。待ち時間はスクリプトに組み込まれています。</span></li>
+  <li>いつもどおり、作成されたPDFをメールに添付して仕入先様へ送付します。</li>
+</ol>
+
+<h2>初めて送付する仕入先様へ</h2>
+<p>新しい形式の納品書を初めてお送りする際は、<strong>「操作説明書（仕入先様向け）」のPDFを一緒に添付</strong>してください。メール本文の例：</p>
+<div class="summary" style="font-size:10pt">
+  今回より、納品書PDFに「納入数」を入力いただくと、2次元バーコードが自動で表示される形式に変更いたしました。<br>
+  お手数ですが、添付の「操作説明書（仕入先様向け）」をご確認のうえ、<strong>Adobe Acrobat Reader（無料）</strong>で納入数を入力し、
+  印刷した納品書を納品物に添付していただきますようお願いいたします。
+</div>
+
+<h2>エラーが表示された場合</h2>
+<p>PDF作成後に次のメッセージが表示された場合は、<strong>そのPDFは送付しないでください。</strong></p>
+<div class="note-box">
+  <strong>「納品書PDFへのバーコード追加に失敗しました。このPDFは送付しないでください。」</strong>
+</div>
+<ol class="steps">
+  <li>メッセージに表示されている「ファイル」と「内容」を控えます（画面の写真でも結構です）。</li>
+  <li>ユキソフトまでご連絡ください。処理の記録（ログ）をお送りいただく場合があります。
+    <span class="note">ログの場所：エクスプローラーのアドレス欄に <code>%LOCALAPPDATA%\YukiSoft</code> と入力すると開けます。</span></li>
+</ol>
+
+<h2>ご注意</h2>
+<div class="note-box">
+  <strong>PDFの内容を確認したいときは、Adobe Acrobat Reader で開いてください。</strong><br>
+  Edge や Chrome などのブラウザで開くと、入力欄とバーコード表示欄は表示されません（PDF自体に問題はありません）。
+</div>
+<div class="note-box">
+  <strong>作成されたPDFを、他のソフトで編集・上書き保存しないでください。</strong><br>
+  ソフトによっては入力欄が削除され、バーコードが表示されなくなる場合があります。
+</div>
+
+<h2>よくあるご質問</h2>
+<table class="qa">
+  <tr><th>同じPDFを2回作成・処理してしまった</th><td>問題ありません。処理済みのPDFは変更されないため、入力欄が二重に追加されることはありません。</td></tr>
+  <tr><th>どの欄が追加されるのか</th><td>納品書の「納入数」欄（入力欄）、部品番号の右側（バーコード）、受領書の「納入数」欄（自動表示）の3か所です。</td></tr>
+  <tr><th>新しいパソコンで発行したい</th><td>そのパソコンにツールのインストールが必要です。共有フォルダの <code>install.bat</code> を実行するか、ユキソフトまでご連絡ください。</td></tr>
+</table>
+
+<footer class="doc"><span>ユキソフト</span><span>2026年10月版</span></footer>
+</body>
+</html>

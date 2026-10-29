@@ -15,6 +15,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pikepdf
+import pypdfium2 as pdfium
 from pikepdf import Array, Dictionary, Name
 
 HERE = Path(__file__).resolve().parent
@@ -80,11 +81,11 @@ def main(path):
         baked = Path(path).with_name(Path(path).stem + "_baked.pdf")
         pdf.save(baked)
 
-    prefix = baked.with_suffix("")
-    subprocess.run(["pdftoppm", "-r", "300", "-png", str(baked), str(prefix)], check=True)
-    pngs = sorted(prefix.parent.glob(prefix.name + "-*.png"))
-    for page, png in enumerate(pngs):
-        img = cv2.imread(str(png), cv2.IMREAD_GRAYSCALE)
+    rendered = pdfium.PdfDocument(str(baked))
+    # pdfium only draws form widgets once form handling is initialised.
+    rendered.init_forms()
+    for page in range(len(rendered)):
+        img = np.array(rendered[page].render(scale=300 / 72, may_draw_forms=True).to_pil().convert("L"))
         text, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
         chuban = calcs[page]["js"].split('"')[-2].rstrip(",")
         expected = f"{chuban},{INPUTS[page]}"
@@ -95,6 +96,7 @@ def main(path):
         if not ok:
             failures.append(f"page {page + 1}")
 
+    rendered.close()
     print("baked PDF:", baked)
     print("FAILURES:", failures or 0)
     return 1 if failures else 0

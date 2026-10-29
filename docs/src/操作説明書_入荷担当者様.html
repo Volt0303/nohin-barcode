@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>操作説明書（入荷担当者様向け）</title>
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<header class="doc">
+  <div class="system">納品書PDF 納入数入力・2次元バーコード化システム</div>
+  <h1>操作説明書　入荷担当者様向け</h1>
+  <p class="lead">入荷時に納品書のバーコードを読み取り、エクセルへ記録する方向けの説明書です。</p>
+</header>
+
+<div class="summary">
+  納品書のバーコードを読み取ると、エクセルの「入荷データ」シートに
+  <strong>読み取り日時・注文番号・納入数・合格数</strong>が1行追加され、自動で保存されます。<br>
+  合格数は納入数が初期値として入りますので、検査後に必要に応じて修正してください。
+</div>
+
+<h2>準備（始業時）</h2>
+<ol class="steps">
+  <li>バーコードリーダーをパソコンのUSBに接続します。</li>
+  <li><code>入荷読み取り.xlsm</code> を開きます。
+    <span class="note">画面上部に「セキュリティの警告」が表示された場合は<strong>「コンテンツの有効化」</strong>をクリックしてください。有効にしないと読み取りできません。</span></li>
+  <li>「読み取り」シートの<strong>黄色の読み取り欄</strong>が選択されていることを確認します。</li>
+</ol>
+
+<div class="mock">
+  <div class="row"><span class="label">読み取り欄</span><span class="input"></span></div>
+  <div class="row"><span class="label">結果</span><span class="ok">読み取りOK： 注番 YN34214 ／ 納入数 10,000（10:15:32）</span></div>
+  <div class="row"><span class="label">本日の読み取り件数</span><span><strong>12件</strong></span></div>
+</div>
+
+<h2>読み取り</h2>
+<ol class="steps">
+  <li>黄色の読み取り欄が選択された状態で、納品書（部品番号の右側）のバーコードを読み取ります。</li>
+  <li>「結果」に<strong style="color:#2E7D32">緑色の「読み取りOK」</strong>が表示されれば完了です。続けて次の納品書を読み取れます。
+    <span class="note">保存は自動で行われます。手動で保存する必要はありません。</span></li>
+</ol>
+
+<h2>合格数の修正（検査後）</h2>
+<ol class="steps">
+  <li>「入荷データ」シートを開きます。</li>
+  <li>該当する行の<strong>「合格数」</strong>（黄色の列）を、検査後の数量に修正します。</li>
+  <li><span class="kbd">Ctrl</span> + <span class="kbd">S</span> で保存します。</li>
+</ol>
+
+<h2>表示されるメッセージ</h2>
+<table class="qa">
+  <tr><th style="color:#2E7D32">読み取りOK（緑色）</th><td>正常に記録されました。</td></tr>
+  <tr><th>「既に読み取り済みです。もう一度追加しますか？」</th><td>同じ注番・同じ納入数がすでに記録されています。同じ納品書を2回読み取った場合は<strong>「いいえ」</strong>、分納などで再度記録する場合は「はい」を選んでください。</td></tr>
+  <tr><th style="color:#C62828">× で始まる赤色のメッセージ</th><td>対象外のバーコード、または内容が正しくないバーコードです。納品書のバーコードかどうかご確認ください。</td></tr>
+</table>
+
+<h2>バーコードがない・読み取れない場合</h2>
+<p>黄色の読み取り欄に、納品書の注番と納入数を<strong>半角のカンマ区切り</strong>で入力し、<span class="kbd">Enter</span> を押してください。読み取った場合と同じように記録されます。</p>
+<div class="summary">入力例：<code>YN34214,10000</code></div>
+
+<h2>ご注意</h2>
+<div class="note-box">
+  <strong>「入荷データ」シートは、合格数以外の列を編集しないでください。</strong><br>
+  また、<strong>同じファイルを複数のパソコンで同時に開かないでください。</strong>読み取り用のパソコンごとに、専用のファイルをご利用ください。
+</div>
+<div class="note-box">
+  <strong>動作環境：</strong>Windows パソコン、Microsoft Excel。バーコードリーダーは USB 接続（キーボード入力モード）でご利用ください。
+</div>
+
+<h2>よくあるご質問</h2>
+<table class="qa">
+  <tr><th>読み取っても何も起こらない</th><td>黄色の読み取り欄が選択されているか、マクロが有効になっているか（準備の手順2）をご確認ください。</td></tr>
+  <tr><th>読み取った文字が化ける</th><td>読み取り欄以外のセルに入力されていないかご確認ください。読み取り欄では日本語入力は自動でオフになります。</td></tr>
+  <tr><th>バーコードが読み取りにくい</th><td>印刷が縮小されている、またはかすれている可能性があります。読み取れない場合は、上記の手入力で記録してください。</td></tr>
+</table>
+
+<footer class="doc"><span>ユキソフト</span><span>2026年10月版</span></footer>
+</body>
+</html>
