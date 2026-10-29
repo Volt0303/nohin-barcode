@@ -20,4 +20,4 @@ QR_FREE_ZONE = (420.0, 255.0, 488.0, 313.0)
 
 # 注番 value printed in the 納品書 注番 column; used when FileMaker does not
 # pass it on the command line.
-CHUBAN_TEXT_ZONE = (590.0, 198.0, 640.0, 215.0)
+CHUBAN_TEXT_ZONE = (571.0, 198.0, 659.0, 215.0)  # inside the column lines at x 570 / 660

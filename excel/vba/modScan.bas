@@ -27,7 +27,7 @@ End Sub
 Public Sub HandleScan(ByVal Target As Range)
     Dim raw As String, parts() As String, chuban As String, qty As String
 
-    If Target.Cells.Count <> 1 Then Exit Sub
+    If Target.CountLarge <> 1 Then Exit Sub
     If Target.Address(False, False) <> INPUT_CELL Then Exit Sub
     raw = NormalizeInput(CStr(Target.Value))
     If raw = "" Then Exit Sub
@@ -48,9 +48,13 @@ Public Sub HandleScan(ByVal Target As Range)
         GoTo Finish
     End If
 
+    ' OK/Cancel, not Yes/No: はい(Y)/いいえ(N) have letter shortcuts, so scanning the
+    ' next slip ("YN...") into the dialog would press はい. Scanner input is ignored
+    ' here and its Enter picks the default button, Cancel.
     If IsDuplicate(chuban, CLng(qty)) Then
         If MsgBox("注番 " & chuban & "・納入数 " & qty & " は既に読み取り済みです。" & vbCrLf & _
-                  "もう一度追加しますか？", vbYesNo + vbExclamation + vbDefaultButton2, "重複の確認") = vbNo Then
+                  "もう一度追加する場合は「OK」、追加しない場合は「キャンセル」を押してください。", _
+                  vbOKCancel + vbExclamation + vbDefaultButton2, "重複の確認") <> vbOK Then
             ShowStatus "追加を取り消しました（" & chuban & " ／ " & qty & "）", RGB(120, 120, 120)
             GoTo Finish
         End If

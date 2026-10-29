@@ -65,7 +65,7 @@ def main(path):
         job = {"docJs": doc_js, "keystroke": keystroke, "calcs": calcs, "fieldNames": names,
                "inputs": {str(k): v for k, v in INPUTS.items()}, "keyTests": KEY_TESTS}
         out = subprocess.run(["node", str(HERE / "acrobat_sim.js")], input=json.dumps(job),
-                             capture_output=True, text=True, check=True)
+                             capture_output=True, text=True, encoding="utf-8", check=True)
         result = json.loads(out.stdout)
         pages = {int(k): v for k, v in result["pages"].items()}
 

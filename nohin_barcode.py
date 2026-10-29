@@ -89,17 +89,22 @@ def _chars(container):
 
 
 def read_chuban(pdf_path):
-    """Text inside CHUBAN_TEXT_ZONE on each page, or None where it is empty."""
+    """Text inside CHUBAN_TEXT_ZONE on each page, or None where it is empty.
+
+    A character that crosses the zone edge makes the page's value invalid, so a
+    truncated 注番 is rejected instead of being put into the QR code.
+    """
     x0, top, x1, bottom = L.CHUBAN_TEXT_ZONE
     found = []
     for page in extract_pages(str(pdf_path)):
-        chars = []
+        chars, clipped = [], False
         for ch in _chars(page):
             cx0, cy0, cx1, cy1 = ch.bbox
-            if cx0 >= x0 and cx1 <= x1 and L.PAGE_HEIGHT - cy1 >= top and L.PAGE_HEIGHT - cy0 <= bottom:
+            if L.PAGE_HEIGHT - cy1 >= top and L.PAGE_HEIGHT - cy0 <= bottom and cx1 > x0 and cx0 < x1:
                 chars.append((cx0, ch.get_text()))
+                clipped = clipped or cx0 < x0 or cx1 > x1
         text = "".join(t for _, t in sorted(chars)).strip()
-        found.append(text or None)
+        found.append(f"{text} (注番欄からはみ出しています)" if clipped else text or None)
     return found
 
 
@@ -250,9 +255,9 @@ def main(argv=None):
     parser.add_argument("--out", help="出力先（省略時は元のファイルを上書き）")
     try:
         args = parser.parse_args(argv)
-    except SystemExit:
+    except SystemExit as exc:
         # The windowed .exe has no console, so argparse's message would be lost.
-        if sys.stderr is None:
+        if exc.code and getattr(sys, "frozen", False):
             show_error("納品書バーコード追加ツールの呼び出し方が正しくありません。\n"
                        "ファイルメーカーのスクリプト設定を確認してください。")
         raise
@@ -260,6 +265,8 @@ def main(argv=None):
     logging.basicConfig(filename=log_path(), level=logging.INFO, encoding="utf-8",
                         format="%(asctime)s %(levelname)s %(message)s")
     try:
+        if not args.pdf.strip():
+            raise ProcessingError("PDFのパスが空です（ファイルメーカーの $winPath を確認してください）")
         process(args.pdf, args.out, args.chuban)
         logging.info("done: %s", args.pdf)
         return 0
